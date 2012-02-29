@@ -1,0 +1,38 @@
+/****************************************\
+* unit.h                                 *
+* Caleb Everett                          *
+*                                        *
+* class for doing math on united values  *
+\****************************************/
+#if !defined UNIT_H
+#define UNIT_H
+
+#include <iostream>
+#include <exception>
+#include "convert.h"
+
+using namespace std;
+
+class unitNum {
+  public:
+    unitNum ();
+    unitNum (double p_value, string p_unit);
+    void changeUnit (string p_unit);
+    string getUnit () const {return unit;};
+    void changevalue (double p_value) { value = p_value;};
+    double getValue () const { return value; };
+    unitNum& operator+=(const unitNum &rhs);
+    unitNum& operator-=(const unitNum &rhs);
+    unitNum operator+(const unitNum &rhs) const;
+    unitNum operator-(const unitNum &rhs) const;
+
+    // truncates number to 3 places
+    friend ostream& operator<<(ostream& out, const unitNum &rhs);
+  private:
+    string unit;
+    double value;
+};
+
+
+#endif
+

@@ -1,0 +1,190 @@
+\documentclass[a4paper, 12pt] {report}
+
+\usepackage{setspace}
+\usepackage{fullpage}
+\usepackage{listings}
+\usepackage{graphicx}
+
+
+\author{Caleb Everett}
+\date{\today}
+\title{Vector Adder}
+
+\begin{document}
+\maketitle
+
+\section*{Introduction}{}
+This program is modeled after most interactive shells, or command prompts. The
+program prompts the user for input, which is interpreted as a command to execute, or
+a vector to input.  After the vector has been added, or the command completed, the
+program will prompt the user for input again, and the process will be repeated until
+the `exit' command is entered.  When the user enters a vector it is stored in an
+array, and when prompted will print the total of all vectors in the array. The
+program uses a set of known units to automatically convert all vectors to the same
+unit when adding them together.  There is a command to set the default output unit as
+well.
+
+\section*{Manual}
+\subsection*{Commands}
+\begin{center}
+  \begin{tabular}{| l | l | p{12cm} |}
+    \hline
+      Command & Arguments & Description \\
+    \hline
+         exit &           & Exits the program \\ 
+    \hline
+        clear &           & Clears the terminal, it's possible this will not work.
+                            Tested and working on linux and windows. \\
+    \hline
+         list &           & Lists all entered vectors, their indexes and the sum.
+                            Alias 'ls'. \\ 
+    \hline
+       remove & IDX       & Removes the vector at the supplied IDX, if IDX is 
+                             'all', all vectors are removed. When a vector 
+                             is removed its value is removed from the total as well.
+                             Alias 'rm'. \\
+    \hline
+          sum &           & Prints the sum of all entered vectors. \\
+    \hline
+        units & UNIT      & Sets the units the sum will be output in. No unit is 
+                             supplied units are reset to default.  Default behavior 
+                             for units it to output in the units of the first vector. \\
+    \hline
+         help &           & Prints a help message listing these commands. \\
+    \hline
+  \end{tabular}
+\end{center}
+
+\pagebreak
+\subsection*{Vectors}
+Input in the following forms will be interpreted as a vector. Including commas or
+parentheses is optional, but each token must be separated by at least one of the
+following characters: space, comma, parentheses, or tab. When a vector is
+successfully added it is printed in cartesian form, with it's index in the array.
+The following units are understood: kN, N, lb. Capitalization matters.
+\begin{center}
+  \begin{tabular}{| c | l |}
+    \hline
+      cartesian & Vector in cartesian format \\
+                & F unit F unit F unit \\
+                & 5 N 2 N 4 N \\
+                & 2 lb, 3 N, 3 N \\
+    \hline
+      point to point & Vector defined by a force and a line \\
+                     & F unit (x,y,z) (x,y,z) \\
+                     & 5 N (0,0,0) (1,2,3) \\
+    \hline
+      coordinate angle & Force and at least two coordinate angles, \\
+                       &  specify which angles are given with a, b, y\\
+                       & F unit deg a deg b deg y \\
+                       & 5 N 90 a 90 b 0 y \\
+                       & 5 N 45 a 45 y \\
+    \hline
+  \end{tabular}
+\end{center}
+
+\subsection*{Example Problems}
+\lstset{language=bash, showstringspaces=false, basicstyle=\scriptsize, 
+  columns=fixed, extendedchars=true, 
+  frame=single, breaklines=true}
+
+  Lines marked by `-$>$' indicate user input and lines without indicate output from the 
+  program.  To see the sum of all inputted vectors enter the command `sum', which will 
+  print the sum in cartesian and coordinate forms.
+  \subsubsection*{2.90}
+    input:
+    \begin{lstlisting}
+    -> 600 N (0,2,4) (0,0,0)
+    Added vector 0: {0 Ni, -268 Nj, -537 Nk}
+    -> 500 N (0,2,4) (4,8,0)
+    Added vector 1: {243 Ni, 364 Nj, -243 Nk}
+    \end{lstlisting}
+    answer:
+    \begin{lstlisting}
+    -> sum
+    sum: {243 Ni, 95.5 Nj, -779 Nk}
+         822 N, a = 72.8, b = 83.3, y = 162
+    \end{lstlisting}
+
+  \subsubsection*{2.96}
+    input:
+    \begin{lstlisting}
+    -> 400 N (0,0,24) (15,20,0)
+    Added vector 0: {173 Ni, 231 Nj, -277 Nk}
+    -> 800 N (0,0,24) (-6,4,0)
+    Added vector 1: {-192 Ni, 128 Nj, -766 Nk}
+    -> 600 N (0,0,24) (16,-18,0)
+    Added vector 2: {282 Ni, -318 Nj, -424 Nk}
+    \end{lstlisting}
+    answer:
+    \begin{lstlisting}
+    sum: {264 Ni, 40.9 Nj, -1.47e+03 Nk}
+         1.49e+03 N, a = 79.8, b = 88.4, y = 170
+    \end{lstlisting}
+
+  \subsubsection*{2.102}
+    input:
+    \begin{lstlisting}
+    -> 450 N (0,0,7) (-1.5,2.59,0)
+    Added vector 0: {-88.7 Ni, 153 Nj, -414 Nk}
+    -> 450 N (0,0,7) (-1.5,-2.59,0)
+    Added vector 1: {-88.7 Ni, -153 Nj, -414 Nk}
+    -> 450 N (0,0,7) (3,0,0)
+    Added vector 2: {177 Ni, 0 Nj, -414 Nk}
+    \end{lstlisting}
+    answer:
+    \begin{lstlisting}
+    sum: {-0.0641 Ni, 0 Nj, -1.24e+03 Nk}
+         1.24e+03 N, a = 90, b = 90, y = 180
+    \end{lstlisting}
+
+\subsection*{Compiling}
+This project includes a gnu make file, if your system has make you can compile using
+
+\lstset{language=bash, showstringspaces=false, basicstyle=\scriptsize, 
+  columns=fixed, extendedchars=true, 
+  frame=single, breaklines=true}
+\begin{lstlisting}
+  $ make
+\end{lstlisting}
+
+If you do not have make use one of the following commands
+linux/unix/mac:
+\begin{lstlisting}
+  $ g++ *.cpp -o vector.exe -lcurses
+\end{lstlisting}
+
+Windows:
+\begin{lstlisting}
+  $ g++ *.cpp -o vector.exe
+\end{lstlisting}
+
+If you do not have g++ on your system use what ever compiler you use, just make sure to 
+include `curses' if on a posix system
+
+\pagebreak
+
+\section*{Flow Chart}
+\includegraphics[width=1\textwidth, keepaspectratio=true]{HageComp1.pdf}
+\pagebreak
+
+\section*{Source Code}
+\lstset{numbers=left,
+        language=C++, 
+        showstringspaces=false, 
+        basicstyle=\scriptsize,
+        aboveskip={1.5\baselineskip},
+        columns=fixed,
+        extendedchars=true,
+        frame=single,
+        breaklines=true}
+\lstinputlisting{main.cpp}
+\lstinputlisting{forceVector.h}
+\lstinputlisting{forceVector.cpp}
+\lstinputlisting{unit.h}
+\lstinputlisting{unit.cpp}
+\lstinputlisting{convert.h}
+\lstinputlisting{clear_term.h}
+\lstinputlisting{clear_term.cpp}
+
+\end{document}
