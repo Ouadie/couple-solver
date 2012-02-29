@@ -18,45 +18,6 @@
 
 using namespace std;
 
-/*
- * 
- * vector<forceVector> storage;   stores inputed force vectors
- * string outUnit = "";           the unit to print output in.
- *
- * string printHelp();            prints the help message, which details commands, 
- *                                usage, and vector formats
- *
- * bool numerical(string test);   returns true if test only contains digits, hyphens, and
- *                                < 1 decimal 
- *
- * void changeUnit(string unit);  sets the output unit
- * forceVector vectorSum();       returns the sum of vectors in storage
- * void printSum();               prints the vectorSum() in cartesian and coordinate form
- * void listVectors();            prints all vectors, and the sum
- * void removeVector(string idx); removes vector as idx, or all vectors if idx is 'all'
- * void parseInput(string input,  parses input into data, removing all parens, whitespace,
- *         vector<string> data);  and commas
- *
- * void addVector(forceVector     adds vector to the list of known vectors
- *                     vector);   
- *
- * void addPointToPoint(...)      creates a vector from input in the form of
- *                                a magnatude and two points
- *
- * void addCoord(...)             creates a vector from input in the form of
- *                                a magnatude and coordinate directions
- *
- * void addCartisian(...)         creates a vector from input in the form of
- *                                cartesian magnatudes
- *  
- * void inputVector(...)          parses input data and attempts to add a vector
- *                                if the data's format matches any of the above
- * 
- * int main(void)                 reads input from user, checks if it matches any
- *                                commands, or is a vector. Exicute's the command
- *                                or adds the vector. Repeats untill 'exit' is inputed
- */
-
 vector<forceVector> storage; // stores inputed force vectors
 string outUnit = "";         // the unit to print output, if empty uses unit of first vector
 
