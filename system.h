@@ -5,6 +5,7 @@
 #include <vector>
 #include "force_vector.h"
 #include "point.h"
+#include "hash.h"
 
 using namespace std;
 
@@ -16,19 +17,9 @@ class free_body {
 };
 
 class system {
-  public:
-    void add_force(string name, force_vector force);
-    int find_force(string name);
-    void list_force_names();
-    void add_point(string name, point point);
-    int find_point(string name);
-    void list_point_names();
   private:
-    vector<force_vector> forces;
-    vector<string> force_names;
-    vector<point> points;
-    vector<string> point_names;
-    vector<free_body> free_bodies;
+    hash<point> points;
+    hash<force_vector> forces;
 };
 
 #endif
