@@ -6,17 +6,30 @@ else
 	INCLUDES =
 endif
 
-all: forceVector.o unit.o main.o clear_term.o convert.o point.o
+all: force_vector.o unit_num.o main.o clear_term.o convert.o point.o system.o
 	@echo linking executable
 	@g++ $^ -o vector.exe $(INCLUDES)
 
-forceVector.o: forceVector.cpp forceVector.h convert.o
-	@echo compiling forceVector
-	@g++ -c forceVector.cpp $(INCLUDES)
+test: test.o force_vector.o unit_num.o clear_term.o convert.o point.o system.o
+	@echo linking test
+	@g++ $^ -o test $(INCLUDES)
 
-unit.o: unit.cpp unit.h convert.o
-	@echo compiling unit
-	@g++ -c unit.cpp $(INCLUDES)
+test.o: test.cpp
+	@echo compiling test
+	@g++ -c test.cpp $(INCLUDES)
+
+
+system.o: system.cpp system.h convert.o
+	@echo compiling system
+	@g++ -c system.cpp $(INCLUDES)
+
+force_vector.o: force_vector.cpp force_vector.h convert.o
+	@echo compiling force_vector
+	@g++ -c force_vector.cpp $(INCLUDES)
+
+unit_num.o: unit_num.cpp unit_num.h convert.o
+	@echo compiling unit_num
+	@g++ -c unit_num.cpp $(INCLUDES)
 
 point.o: point.cpp point.h
 	@echo compiling point

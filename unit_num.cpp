@@ -1,25 +1,25 @@
 /************************************************\
-* unit.cpp                            vector add *
+* unit_num.cpp                        vector add *
 * Caleb Everett                          statics *
 *                                                *
 * applies units to values, and provides the      *
 * to convert between them                        *
 \************************************************/
-#if !defined UNIT_CPP
-#define UNIT_CPP
+#if !defined UNIT_NUM_CPP
+#define UNIT_NUM_CPP
 
-#include "unit.h"
+#include "unit_num.h"
 
 using namespace std;
 
 // default value is 0 N
-unitNum::unitNum () {
+unit_num::unit_num () {
   value = 0;
   unit = "N";
 }
 
-// new unitNum with p_value and p_unit
-unitNum::unitNum (double p_value, string p_unit){
+// new unit_num with p_value and p_unit
+unit_num::unit_num (double p_value, string p_unit){
   if (Convert.toN(p_unit) == 0) { // unit conversion not found
     throw p_unit; // hacky exception handaling, return the string of the illegal unit
   }
@@ -28,7 +28,7 @@ unitNum::unitNum (double p_value, string p_unit){
 }
 
 // converts to p_unit
-void unitNum::changeUnit (string p_unit) {
+void unit_num::change_unit (string p_unit) {
   if (Convert.toN(p_unit) == 0) { // unit conversion not found
     throw p_unit; // hacky exception handaling, return the string of the illegal unit
   }
@@ -38,32 +38,32 @@ void unitNum::changeUnit (string p_unit) {
 }
 
 // math presrving units
-unitNum& unitNum::operator+=(const unitNum& rhs) {
+unit_num& unit_num::operator+=(const unit_num& rhs) {
   value += (rhs.value * Convert.toN(rhs.unit))/Convert.toN(unit); // convert rhs to newtons, then to this unit
   return *this;
 }
 
 // math presrving units
-unitNum& unitNum::operator-=(const unitNum& rhs) {
+unit_num& unit_num::operator-=(const unit_num& rhs) {
   value -= (rhs.value * Convert.toN(rhs.unit))/Convert.toN(unit); // convert rhs to newtons, then to this unit
   return *this;
 }
 
 // math presrving units
-unitNum unitNum::operator+(const unitNum& rhs) const {
-  unitNum result(*this);
+unit_num unit_num::operator+(const unit_num& rhs) const {
+  unit_num result(*this);
   result += rhs;
   return result;
 }
 
 // stream operator for printing
-unitNum unitNum::operator-(const unitNum& rhs) const {
-  unitNum result(*this);
+unit_num unit_num::operator-(const unit_num& rhs) const {
+  unit_num result(*this);
   result -= rhs;
   return result;
 }
 
-ostream& operator<<(ostream& out, const unitNum &rhs) {
+ostream& operator<<(ostream& out, const unit_num &rhs) {
   double value = rhs.value;
   if (value < 0.0001 && value > -0.0001) value = 0;
   out.precision(3);

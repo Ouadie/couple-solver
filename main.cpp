@@ -12,17 +12,17 @@
 #include <stdlib.h> // included for string to number conversion
 #include <vector>  // resizeable array
 #include "convert.h"
-#include "unit.h"
-#include "forceVector.h"
+#include "unit_num.h"
+#include "force_vector.h"
 #include "clear_term.h"
 
 using namespace std;
 
-vector<forceVector> storage; // stores inputed force vectors
-string outUnit = "";         // the unit to print output, if empty uses unit of first vector
+vector<force_vector> storage; // stores inputed force vectors
+string out_unit = "";         // the unit to print output, if empty uses unit of first vector
 
 // help message, lists commands, and vector formats
-string printHelp() {
+string print_help() {
   string out = "";
   out += "This tool stores inputted vectors, and prints their summation\n"
          "To use this tool enter either a command or a vector you wish to be input\n"
@@ -76,9 +76,9 @@ bool numerical(string test[], int num){
 
 // sets the default output unit
 // if unit is unknown prints availiable units
-void changeUnit(string unit) {
+void change_unit(string unit) {
   if (Convert.toN(unit) != 0) {
-    outUnit = unit;
+    out_unit = unit;
     cout << "units set to " << unit << endl;
   } else
     cout << Convert.unknown_unit(unit) << endl;
@@ -86,59 +86,59 @@ void changeUnit(string unit) {
 
 // return the summation of all of the vectors stored in storage
 // will return in the set units, or units of first inputted vector
-forceVector vectorSum() {
+force_vector vector_sum() {
   if (storage.size() == 0) {
-    forceVector sum;
+    force_vector sum;
     return sum;
   } else {
-    vector<forceVector>::iterator it = storage.begin();
-    forceVector sum = *it; // initialse the sum so that units are correct
+    vector<force_vector>::iterator it = storage.begin();
+    force_vector sum = *it; // initialse the sum so that units are correct
     it++;
     for (it; it < storage.end(); it++) {
       sum += *it;
     }
-    if (outUnit != "")
-      sum.changeUnit(outUnit);
+    if (out_unit != "")
+      sum.change_unit(out_unit);
     return sum;
   }
 }
 
-void printSum() {
-  forceVector sum = vectorSum();
+void print_sum() {
+  force_vector sum = vector_sum();
   cout << "sum: " << sum << endl;               // sum of vectors in cartisean
-  cout << "     " << sum.toCoordDir() << endl;  // sum of vectors in coord dir format
+  cout << "     " << sum.to_coord_dir() << endl;  // sum of vectors in coord dir format
 }
 
 // indexes and lists all vectors in storage
 // and the summation of them
 // TODO make this cleaner, maybe more table-y?
-void listVectors() {
+void list_vectors() {
   if (storage.size() == 0)
     cout << "No vectors" << endl;
   else {
 
     for (int i = 0, length = storage.size(); i < length; i++) {
       cout << i << ":  " << storage[i] << endl;          // vector in cartesian format
-      cout << "    " << storage[i].toCoordDir() << endl; // vector in coord dir format
+      cout << "    " << storage[i].to_coord_dir() << endl; // vector in coord dir format
       cout << endl;
     }
-    forceVector sum = vectorSum();
+    force_vector sum = vector_sum();
     cout << "sum: " << sum << endl;               // sum of vectors in cartisean
-    cout << "     " << sum.toCoordDir() << endl;  // sum of vectors in coord dir format
+    cout << "     " << sum.to_coord_dir() << endl;  // sum of vectors in coord dir format
   }
 }
 
 // removes vector at idx from storage
 // if 'all' is passed removes all vectors
-void removeVector(string idx) {
+void remove_vector(string idx) {
   if (idx == "all") {  // clear all vectors and reset output unit
     storage.clear();
-    outUnit = "";
+    out_unit = "";
     cout << "Vectors cleared." << endl;
   } else if (numerical(idx)) { // idx is a number
     int pos = atoi(idx.c_str());
     if (pos >= 0 && pos < storage.size()) {
-      vector<forceVector>::iterator it = storage.begin(); // stupid vector stuff, only takes iterator, so make an iterator
+      vector<force_vector>::iterator it = storage.begin(); // stupid vector stuff, only takes iterator, so make an iterator
       it += pos;                                          // move it to the position
       storage.erase(it);                                  // and remove the vector
     } else {
@@ -146,11 +146,11 @@ void removeVector(string idx) {
     }
   } else
     cout << "Illegal argument: " << idx << endl;
-  listVectors();
+  list_vectors();
 }
 
 // parses input into a vector, cleaning whitespace, commas and parens
-void parseInput(const string &input, vector<string> &data) {
+void parse_input(const string &input, vector<string> &data) {
   data.clear(); // clear out any data already in the vector
   int start = 0;
   int end = 0;
@@ -162,15 +162,15 @@ void parseInput(const string &input, vector<string> &data) {
   } while (end != -1 || start != -1);
 }
 
-void addVector(forceVector vector) {
+void add_vector(force_vector vector) {
   storage.push_back(vector);
   cout << "Added vector " << storage.size() - 1 << ": " << storage.back() << endl;
 }
 
-void addPointToPoint(double mag, string unit, double x1, double y1, double z1, double x2, double y2, double z2){
+void add_point_to_point(double mag, string unit, double x1, double y1, double z1, double x2, double y2, double z2){
   try { 
-    forceVector a(mag, unit, x1, y1, z1, x2, y2, z2);
-    addVector(a);
+    force_vector a(mag, unit, x1, y1, z1, x2, y2, z2);
+    add_vector(a);
   } catch (string e) {
     cout << Convert.unknown_unit(e) << endl;
   } catch (exception& e) { // vector not legal
@@ -178,10 +178,10 @@ void addPointToPoint(double mag, string unit, double x1, double y1, double z1, d
   }
 }
 
-void addCoord(double mag, string unit, double alpha, double beta, double gama) {
+void add_coord(double mag, string unit, double alpha, double beta, double gama) {
   try {
-    forceVector a(mag, unit, alpha, beta, gama);
-    addVector(a);
+    force_vector a(mag, unit, alpha, beta, gama);
+    add_vector(a);
   } catch (exception& e) { // vector not legal, angles did not work out
     cout << e.what() << endl;
   } catch (string e) {
@@ -189,26 +189,26 @@ void addCoord(double mag, string unit, double alpha, double beta, double gama) {
   }
 }
 
-void addCartisian(double i, string u_i, double j, string u_j, double k, string u_k) {
+void add_cartisian(double i, string u_i, double j, string u_j, double k, string u_k) {
   try {
-    forceVector a(i, u_i, j, u_j, k, u_k);
-    addVector(a);
+    force_vector a(i, u_i, j, u_j, k, u_k);
+    add_vector(a);
   } catch (string e) { // string not recognised as a unit
     cout << Convert.unknown_unit(e) << endl;
   }
 }
 
-void inputVector(vector<string> &data) {
+void input_vector(vector<string> &data) {
   // input with 8 string or number values can be point to point or coordinate direction vectors
   if (data.size() == 8) {
     if (numerical((string[]){data[0], data[2], data[3], data[4], data[5], data[6], data[7]}, 7)) {
-      addPointToPoint(atof(data[0].c_str()), data[1], 
+      add_point_to_point(atof(data[0].c_str()), data[1], 
           atof(data[2].c_str()), atof(data[3].c_str()), atof(data[4].c_str()), 
           atof(data[5].c_str()), atof(data[6].c_str()), atof(data[7].c_str()));
     }
     else if (numerical(data[0]) && // should be a coordinate angle vector, with 3 angles given
         numerical(data[2]) && numerical(data[4]) && numerical(data[6])) {
-      addCoord(atof(data[0].c_str()), data[1], atof(data[2].c_str()), atof(data[4].c_str()), atof(data[6].c_str()));
+      add_coord(atof(data[0].c_str()), data[1], atof(data[2].c_str()), atof(data[4].c_str()), atof(data[6].c_str()));
     } else {
       cout << "unrecognised input enter 'help' to se a list of inputs" << endl; // dont know what that is
     }
@@ -224,9 +224,9 @@ void inputVector(vector<string> &data) {
         if (data[5] == "a") alpha = atof(data[4].c_str());
         else if (data[5] == "b") beta = atof(data[4].c_str());
         else if (data[5] == "y") gama = atof(data[4].c_str());
-        addCoord(atof(data[0].c_str()), data[1], alpha, beta, gama);
+        add_coord(atof(data[0].c_str()), data[1], alpha, beta, gama);
       } else { // cartisean vector
-        addCartisian(atof(data[0].c_str()), data[1], atof(data[2].c_str()), data[3], atof(data[4].c_str()), data[5]);
+        add_cartisian(atof(data[0].c_str()), data[1], atof(data[2].c_str()), data[3], atof(data[4].c_str()), data[5]);
       }
     } else {
       cout << "unrecognised input enter 'help' to se a list of inputs" << endl; // lok IDK?
@@ -245,31 +245,31 @@ int main(void) {
   while (!done) { // keep looping till were done
     cout << "-> "; // print the user prompt
     getline (cin, input); // grab all user input, store it in input
-    parseInput(input, data); // this will parse the input, store it in data
+    parse_input(input, data); // this will parse the input, store it in data
     if (data.size() != 0) {
       // special case commands
       if (data[0] == "done" || data[0] == "exit")
         done = true;
       else if (data[0] == "list" || data[0] == "ls")
-        listVectors();
+        list_vectors();
       else if (data[0] == "remove" || data[0] == "rm")
-        removeVector(data[1]);
+        remove_vector(data[1]);
       else if (data[0] == "sum")
-        printSum();
+        print_sum();
       else if (data[0] == "units") {
         if (data.size() > 1)
-          changeUnit(data[1]);
+          change_unit(data[1]);
         else {
-          outUnit = "";
+          out_unit = "";
           cout << "units cleared" << endl;
         }
       }
       else if (data[0] == "clear")
         ClearScreen();
       else if (data[0] == "help")
-        cout << printHelp() << endl;
+        cout << print_help() << endl;
       else { // if it's none of those it's probably a vector, or a mistake
-        inputVector(data);
+        input_vector(data);
       }
     }
   }
