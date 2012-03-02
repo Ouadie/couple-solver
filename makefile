@@ -19,14 +19,9 @@ test.o: test.cpp
 	@g++ -c test.cpp $(INCLUDES)
 
 
-system.o: system.cpp system.h hash.o
+system.o: system.cpp system.h 
 	@echo compiling system
 	@g++ -c system.cpp $(INCLUDES)
-
-hash.o: hash.cpp hash.h
-	@echo compiling hash
-	@g++ -c hash.cpp $(INCLUDES)
-
 
 force_vector.o: force_vector.cpp force_vector.h convert.o
 	@echo compiling force_vector

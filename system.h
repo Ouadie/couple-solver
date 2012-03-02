@@ -3,9 +3,9 @@
 
 #include <iostream>
 #include <vector>
+#include <map>
 #include "force_vector.h"
 #include "point.h"
-#include "hash.h"
 
 using namespace std;
 
@@ -18,8 +18,8 @@ class free_body {
 
 class system {
   private:
-    hash<point> points;
-    hash<force_vector> forces;
+    map<string, force_vector> forces;
+    map<string, point> points;
 };
 
 #endif
