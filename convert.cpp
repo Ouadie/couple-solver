@@ -14,7 +14,7 @@ using namespace std;
 // standard output for unknown unit error, make sure to update this when new units are added
 string convert::unknown_unit(string unit) {
   stringstream result;
-  result << "Did not recognise unit " << unit << ". Try one of the following kN, N, lb.";
+  result << "Did not recognise unit '" << unit << "'. Try one of the following kN, N, lb.";
   return result.str();
 }
 

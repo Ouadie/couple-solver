@@ -1,0 +1,6 @@
+system
+  has many actions
+    has one force
+    has one point
+  has many points
+  has many forces

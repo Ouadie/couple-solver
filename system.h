@@ -9,15 +9,14 @@
 
 using namespace std;
 
-class free_body {
+class action {
   public:
-    void list_forces();
     force_vector force;
     point location;
 };
 
 class system {
-  private:
+  public:
     map<string, force_vector> forces;
     map<string, point> points;
 };

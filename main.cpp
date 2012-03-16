@@ -76,12 +76,18 @@ bool numerical(string test[], int num){
 
 // sets the default output unit
 // if unit is unknown prints availiable units
-void change_unit(string unit) {
-  if (Convert.toN(unit) != 0) {
-    out_unit = unit;
-    cout << "units set to " << unit << endl;
-  } else
-    cout << Convert.unknown_unit(unit) << endl;
+void change_unit(vector<string> &data) {
+  if (data.size() > 1) {
+    if (Convert.toN(data[1]) != 0) {
+      out_unit = data[1];
+      cout << "units set to " << data[1] << endl;
+    } else
+      cout << Convert.unknown_unit(data[1]) << endl;
+  }
+  else {
+    out_unit = "";
+    cout << "units cleared" << endl;
+  }
 }
 
 // return the summation of all of the vectors stored in storage
@@ -198,40 +204,47 @@ void add_cartisian(double i, string u_i, double j, string u_j, double k, string 
   }
 }
 
-void input_vector(vector<string> &data) {
-  // input with 8 string or number values can be point to point or coordinate direction vectors
-  if (data.size() == 8) {
-    if (numerical((string[]){data[0], data[2], data[3], data[4], data[5], data[6], data[7]}, 7)) {
-      add_point_to_point(atof(data[0].c_str()), data[1], 
-          atof(data[2].c_str()), atof(data[3].c_str()), atof(data[4].c_str()), 
-          atof(data[5].c_str()), atof(data[6].c_str()), atof(data[7].c_str()));
-    }
-    else if (numerical(data[0]) && // should be a coordinate angle vector, with 3 angles given
-        numerical(data[2]) && numerical(data[4]) && numerical(data[6])) {
-      add_coord(atof(data[0].c_str()), data[1], atof(data[2].c_str()), atof(data[4].c_str()), atof(data[6].c_str()));
-    } else {
-      cout << "unrecognised input enter 'help' to se a list of inputs" << endl; // dont know what that is
-    }
-  } else if (data.size() == 6) {
-    if (numerical((string[]){data[0], data[2], data[4]}, 3)) {
-      if ( (data[3] == "a" || data[3] == "b" || data[3] == "y") && // two termed coordinate vector
-           (data[5] == "a" || data[5] == "b" || data[5] == "y") ) {
-        double alpha = -1, beta = -1, gama = -1;
-        if (data[3] == "a") alpha = atof(data[2].c_str());
-        else if (data[3] == "b") beta = atof(data[2].c_str());
-        else if (data[3] == "y") gama = atof(data[2].c_str());
+void set_angle(string &id, string &val, double &alpha, double &beta, double &gama) {
+  if (id == "a") alpha = atof(val.c_str());
+  else if (id == "b") beta = atof(val.c_str());
+  else if (id == "y") gama = atof(val.c_str());
+}
 
-        if (data[5] == "a") alpha = atof(data[4].c_str());
-        else if (data[5] == "b") beta = atof(data[4].c_str());
-        else if (data[5] == "y") gama = atof(data[4].c_str());
-        add_coord(atof(data[0].c_str()), data[1], alpha, beta, gama);
-      } else { // cartisean vector
-        add_cartisian(atof(data[0].c_str()), data[1], atof(data[2].c_str()), data[3], atof(data[4].c_str()), data[5]);
-      }
-    } else {
-      cout << "unrecognised input enter 'help' to se a list of inputs" << endl; // lok IDK?
+void input_vector(vector<string> &data) {
+  int map = 0x00000000; // acting as a bitmap 
+  if (data.size() >= 1 && numerical(data[0])) map += 0x10000000;
+  if (data.size() >= 2 && numerical(data[1])) map += 0x01000000;
+  if (data.size() >= 3 && numerical(data[2])) map += 0x00100000;
+  if (data.size() >= 4 && numerical(data[3])) map += 0x00010000;
+  if (data.size() >= 5 && numerical(data[4])) map += 0x00001000;
+  if (data.size() >= 6 && numerical(data[5])) map += 0x00000100;
+  if (data.size() >= 7 && numerical(data[6])) map += 0x00000010;
+  if (data.size() >= 8 && numerical(data[7])) map += 0x00000001;
+
+  if (map == 0x10111111) { // point to point vector
+    add_point_to_point(atof(data[0].c_str()), data[1], 
+        atof(data[2].c_str()), atof(data[3].c_str()), atof(data[4].c_str()), 
+        atof(data[5].c_str()), atof(data[6].c_str()), atof(data[7].c_str()));
+  }
+  else if (map == 0x10101010) { // 3 angle coord
+    add_coord(atof(data[0].c_str()), data[1], atof(data[2].c_str()), atof(data[4].c_str()), atof(data[6].c_str()));
+  }
+  else if (map == 0x10101000) { // 2 angle coord or cartesian
+    if ( (data[3] == "a" || data[3] == "b" || data[3] == "y") && // two termed coordinate vector
+        (data[5] == "a" || data[5] == "b" || data[5] == "y") ) {
+      double alpha = -1, beta = -1, gama = -1;
+      set_angle(data[3], data[2], alpha, beta, gama);
+      set_angle(data[5], data[4], alpha, beta, gama);
+      add_coord(atof(data[0].c_str()), data[1], alpha, beta, gama);
+
+    } else { // cartisean vector
+      add_cartisian(atof(data[0].c_str()), data[1], atof(data[2].c_str()), data[3], atof(data[4].c_str()), data[5]);
     }
   }
+}
+
+void input_point(vector<string> data) {
+  // add a point to the system
 }
 
 
@@ -257,18 +270,17 @@ int main(void) {
       else if (data[0] == "sum")
         print_sum();
       else if (data[0] == "units") {
-        if (data.size() > 1)
-          change_unit(data[1]);
-        else {
-          out_unit = "";
-          cout << "units cleared" << endl;
-        }
+        change_unit(data);
       }
       else if (data[0] == "clear")
         ClearScreen();
       else if (data[0] == "help")
         cout << print_help() << endl;
-      else { // if it's none of those it's probably a vector, or a mistake
+      else if (data[0] == "force")
+        input_vector(data);
+      else if (data[0] == "point")
+        input_point(data);
+      else {
         input_vector(data);
       }
     }
