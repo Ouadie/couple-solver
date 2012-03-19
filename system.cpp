@@ -5,5 +5,4 @@
 
 using namespace std;
 
-
 #endif

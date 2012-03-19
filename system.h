@@ -2,8 +2,7 @@
 #define SYSTEM_H
 
 #include <iostream>
-#include <vector>
-#include <map>
+#include "hash.h"
 #include "force_vector.h"
 #include "point.h"
 
@@ -17,8 +16,11 @@ class action {
 
 class system {
   public:
-    map<string, force_vector> forces;
-    map<string, point> points;
+    string out_unit;
+    hash<force_vector> forces;
+    hash<point> points;
+  private:
+    void change_unit(string unit);
 };
 
 #endif

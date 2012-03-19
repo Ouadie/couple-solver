@@ -1,14 +1,12 @@
 #include <iostream>
-#include "force_vector.h"
-#include "system.h"
+#include "hash.h"
 
 using namespace std;
 
-int main(void) {
-  system sys;
-  force_vector force;
-  point loc;
-  sys.forces["a"] = force;
-  cout << sys.forces["a"];
+int main () {
+  hash<int> force;
+  force["a"] = "a";
+  force.to_string();
   return 0;
 }
+
