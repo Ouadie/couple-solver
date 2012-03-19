@@ -17,8 +17,8 @@ class action {
 class system {
   public:
     string out_unit;
-    hash<force_vector> forces;
-    hash<point> points;
+    my_hash<force_vector> forces;
+    my_hash<point> points;
   private:
     void change_unit(string unit);
 };

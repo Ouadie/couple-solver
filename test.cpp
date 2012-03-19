@@ -4,9 +4,9 @@
 using namespace std;
 
 int main () {
-  hash<int> force;
-  force["a"] = "a";
-  force.to_string();
+  my_hash<int> tmp;
+  tmp["a"] = 1;
+  cout << tmp["a"] << endl;
   return 0;
 }
-
+  

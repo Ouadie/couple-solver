@@ -6,7 +6,7 @@ else
 	INCLUDES =
 endif
 
-all: force_vector.o unit_num.o main.o clear_term.o convert.o point.o system.o hash.o
+all: force_vector.o unit_num.o main.o clear_term.o convert.o point.o system.o
 	@echo linking executable
 	@g++ $^ -o vector.exe $(INCLUDES)
 
@@ -14,14 +14,18 @@ main.o: main.cpp convert.o
 	@echo compiling main
 	@g++ -c main.cpp $(INCLUDES)
 
+test: force_vector.o unit_num.o test.o clear_term.o convert.o point.o system.o
+	@echo linking executable
+	@g++ $^ -o test $(INCLUDES)
+
+test.o: test.cpp convert.o
+	@echo compiling test
+	@g++ -c test.cpp $(INCLUDES)
+
 system.o: system.cpp system.h
 	@echo compiling system
 	@g++ -c system.cpp $(INCLUDES)
 	
-hash.o: hash.cpp hash.h 
-	@echo compiling hash
-	@g++ -c hash.cpp $(INCLUDES)
-
 point.o: point.cpp point.h
 	@echo compiling point
 	@g++ -c point.cpp $(INCLUDES)
