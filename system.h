@@ -18,6 +18,7 @@ class system {
   public:
     string out_unit;
     my_hash<force_vector> forces;
+    my_hash<force_vector> couples;
     my_hash<point> points;
   private:
     void change_unit(string unit);

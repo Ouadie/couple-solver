@@ -14,6 +14,7 @@
 #include "convert.h"
 #include "unit_num.h"
 #include "force_vector.h"
+#include "numerical.h"
 #include "clear_term.h"
 
 using namespace std;
@@ -54,24 +55,6 @@ string print_help() {
           " - units UNIT: sets output to UNIT\n"
           " - clear: clears the console\n";
   return out;
-}
-// returns true if string is numerical (all charecters are digites or decimal)
-bool numerical(string test) {
-  if (test.find_first_not_of("0123456789.-") == test.npos) { // are there only digets, decimals or negative signs?
-    int first = test.find_first_of("."); // yup, test if only one decimal
-    return (test.find_first_of(".", first + 1) == test.npos); // only found one '.' test is a number
-  } else
-    return false; // nope were out
-}
-
-// tests that each element in an inputed array is numerical
-bool numerical(string test[], int num){
-  bool pass = true;
-  for (int i = 0; i < num; i++){
-    pass = numerical(test[i]);
-    if (!pass) break;
-  }
-  return pass;
 }
 
 // sets the default output unit
@@ -168,26 +151,11 @@ void parse_input(const string &input, vector<string> &data) {
   } while (end != -1 || start != -1);
 }
 
-void add_vector(force_vector vector) {
-  storage.push_back(vector);
-  cout << "Added vector " << storage.size() - 1 << ": " << storage.back() << endl;
-}
-
-void add_point_to_point(double mag, string unit, double x1, double y1, double z1, double x2, double y2, double z2){
-  try { 
-    force_vector a(mag, unit, x1, y1, z1, x2, y2, z2);
-    add_vector(a);
-  } catch (string e) {
-    cout << Convert.unknown_unit(e) << endl;
-  } catch (exception& e) { // vector not legal
-    cout << e.what() << endl;
-  }
-}
-
-void add_coord(double mag, string unit, double alpha, double beta, double gama) {
+void add_vector(vector<string> &data) {
   try {
-    force_vector a(mag, unit, alpha, beta, gama);
-    add_vector(a);
+    force_vector a(data);
+    storage.push_back(a);
+    cout << "Added vector " << storage.size() - 1 << ": " << storage.back() << endl;
   } catch (exception& e) { // vector not legal, angles did not work out
     cout << e.what() << endl;
   } catch (string e) {
@@ -195,53 +163,6 @@ void add_coord(double mag, string unit, double alpha, double beta, double gama) 
   }
 }
 
-void add_cartisian(double i, string u_i, double j, string u_j, double k, string u_k) {
-  try {
-    force_vector a(i, u_i, j, u_j, k, u_k);
-    add_vector(a);
-  } catch (string e) { // string not recognised as a unit
-    cout << Convert.unknown_unit(e) << endl;
-  }
-}
-
-void set_angle(string &id, string &val, double &alpha, double &beta, double &gama) {
-  if (id == "a") alpha = atof(val.c_str());
-  else if (id == "b") beta = atof(val.c_str());
-  else if (id == "y") gama = atof(val.c_str());
-}
-
-void input_vector(vector<string> &data) {
-  int map = 0x00000000; // acting as a bitmap 
-  if (data.size() >= 1 && numerical(data[0])) map += 0x10000000;
-  if (data.size() >= 2 && numerical(data[1])) map += 0x01000000;
-  if (data.size() >= 3 && numerical(data[2])) map += 0x00100000;
-  if (data.size() >= 4 && numerical(data[3])) map += 0x00010000;
-  if (data.size() >= 5 && numerical(data[4])) map += 0x00001000;
-  if (data.size() >= 6 && numerical(data[5])) map += 0x00000100;
-  if (data.size() >= 7 && numerical(data[6])) map += 0x00000010;
-  if (data.size() >= 8 && numerical(data[7])) map += 0x00000001;
-
-  if (map == 0x10111111) { // point to point vector
-    add_point_to_point(atof(data[0].c_str()), data[1], 
-        atof(data[2].c_str()), atof(data[3].c_str()), atof(data[4].c_str()), 
-        atof(data[5].c_str()), atof(data[6].c_str()), atof(data[7].c_str()));
-  }
-  else if (map == 0x10101010) { // 3 angle coord
-    add_coord(atof(data[0].c_str()), data[1], atof(data[2].c_str()), atof(data[4].c_str()), atof(data[6].c_str()));
-  }
-  else if (map == 0x10101000) { // 2 angle coord or cartesian
-    if ( (data[3] == "a" || data[3] == "b" || data[3] == "y") && // two termed coordinate vector
-        (data[5] == "a" || data[5] == "b" || data[5] == "y") ) {
-      double alpha = -1, beta = -1, gama = -1;
-      set_angle(data[3], data[2], alpha, beta, gama);
-      set_angle(data[5], data[4], alpha, beta, gama);
-      add_coord(atof(data[0].c_str()), data[1], alpha, beta, gama);
-
-    } else { // cartisean vector
-      add_cartisian(atof(data[0].c_str()), data[1], atof(data[2].c_str()), data[3], atof(data[4].c_str()), data[5]);
-    }
-  }
-}
 
 void input_point(vector<string> data) {
   // add a point to the system
@@ -277,11 +198,11 @@ int main(void) {
       else if (data[0] == "help")
         cout << print_help() << endl;
       else if (data[0] == "force")
-        input_vector(data);
+        add_vector(data);
       else if (data[0] == "point")
-        input_point(data);
+        add_vector(data);
       else {
-        input_vector(data);
+        add_vector(data);
       }
     }
   }

@@ -11,10 +11,13 @@
 #define PI 3.14159265
 
 #include <iostream>
+#include <stdlib.h> // included for string to number conversion
 #include <exception>
 #include <sstream>
+#include <vector>
 #include <math.h>
 #include "unit_num.h"
+#include "numerical.h"
 
 using namespace std;
 
@@ -40,6 +43,7 @@ class force_vector{
     force_vector(unit_num &i_p, unit_num &j_p, unit_num &k_p);
     force_vector(double mag, string unit, double x1, double y1, double z1, double x2, double y2, double z2);
     force_vector(double mag, string unit, double alpha, double beta, double gama);
+    force_vector(vector<string> &data);
     void change_unit(string) throw (string);
     unit_num magnitude() const;
     string unit() const;

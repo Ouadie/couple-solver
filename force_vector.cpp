@@ -95,6 +95,46 @@ force_vector::force_vector(double mag, string unit, double alpha, double beta, d
   k = unit_num(mag * cos(gama), unit);
 }
 
+void set_angle(string &id, string &val, double &alpha, double &beta, double &gama) {
+  if (id == "a") alpha = atof(val.c_str());
+  else if (id == "b") beta = atof(val.c_str());
+  else if (id == "y") gama = atof(val.c_str());
+}
+
+force_vector::force_vector(vector<string> &data) {
+  int map = 0x00000000; // acting as a bitmap 
+  if (data.size() >= 1 && numerical(data[0])) map += 0x10000000;
+  if (data.size() >= 2 && numerical(data[1])) map += 0x01000000;
+  if (data.size() >= 3 && numerical(data[2])) map += 0x00100000;
+  if (data.size() >= 4 && numerical(data[3])) map += 0x00010000;
+  if (data.size() >= 5 && numerical(data[4])) map += 0x00001000;
+  if (data.size() >= 6 && numerical(data[5])) map += 0x00000100;
+  if (data.size() >= 7 && numerical(data[6])) map += 0x00000010;
+  if (data.size() >= 8 && numerical(data[7])) map += 0x00000001;
+
+  if (map == 0x10111111) { // point to point vector
+    *this = force_vector(atof(data[0].c_str()), data[1], 
+        atof(data[2].c_str()), atof(data[3].c_str()), atof(data[4].c_str()), 
+        atof(data[5].c_str()), atof(data[6].c_str()), atof(data[7].c_str()));
+  }
+  else if (map == 0x10101010) { // 3 angle coord
+    *this = force_vector(atof(data[0].c_str()), data[1], atof(data[2].c_str()), atof(data[4].c_str()), atof(data[6].c_str()));
+  }
+  else if (map == 0x10101000) { // 2 angle coord or cartesian
+    if ( (data[3] == "a" || data[3] == "b" || data[3] == "y") && // two termed coordinate vector
+        (data[5] == "a" || data[5] == "b" || data[5] == "y") ) {
+      double alpha = -1, beta = -1, gama = -1;
+      set_angle(data[3], data[2], alpha, beta, gama);
+      set_angle(data[5], data[4], alpha, beta, gama);
+      *this = force_vector(atof(data[0].c_str()), data[1], alpha, beta, gama);
+
+    } else { // cartisean vector
+      *this = force_vector(atof(data[0].c_str()), data[1], atof(data[2].c_str()), data[3], atof(data[4].c_str()), data[5]);
+    }
+  }
+
+};
+
 // converts the vector to given unit. If unit isnt understood throws the unit
 // really simply/bad way to handle exceptions
 void force_vector::change_unit(string unit) throw (string) {
