@@ -2,6 +2,7 @@
 #define MY_HASH_H
 #include <iostream>
 #include <map>
+#include <string>
 using namespace std;
 
 template <class T>
