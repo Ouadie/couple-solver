@@ -17,7 +17,7 @@ class unit_num {
   public:
     unit_num ();
     unit_num (double p_value, string p_unit);
-    void change_unit (string p_unit);
+    double change_unit (string p_unit);
     string getUnit () const {return unit;};
     void changevalue (double p_value) { value = p_value;};
     double getValue () const { return value; };

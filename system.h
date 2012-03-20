@@ -1,5 +1,5 @@
-#if !defined SYSTEM_H
-#define SYSTEM_H
+#if !defined MY_SYSTEM_H
+#define MY_SYSTEM_H
 
 #include <iostream>
 #include "hash.h"
@@ -8,18 +8,27 @@
 
 using namespace std;
 
+// an action describes a force at a point
 class action {
   public:
     force_vector force;
-    point location;
+    point loc;
+
+    action(point p, force_vector f);
+
+    force_vector moment_at(const point &p);
 };
 
-class system {
+class my_system {
   public:
-    string out_unit;
+    my_hash<action> actions;
+
     my_hash<force_vector> forces;
-    my_hash<force_vector> couples;
+    my_hash<force_vector> moments;
     my_hash<point> points;
+
+    force_vector force_equ(); // sum of all forces
+    force_vector moment_equ(point loc); // sum of all moments about a point
   private:
     void change_unit(string unit);
 };

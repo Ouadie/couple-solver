@@ -20,6 +20,7 @@ class point{
     double y;
     double z;
     double lengthTo(const point &rhs) const;
+    point operator-(const point &rhs) const;
 
     friend ostream& operator<<(ostream& out, const point &rhs);
 };

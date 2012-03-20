@@ -28,13 +28,14 @@ unit_num::unit_num (double p_value, string p_unit){
 }
 
 // converts to p_unit
-void unit_num::change_unit (string p_unit) {
+double unit_num::change_unit (string p_unit) {
   if (Convert.toN(p_unit) == 0) { // unit conversion not found
     throw p_unit; // hacky exception handaling, return the string of the illegal unit
   }
   value = value * Convert.toN(unit); // convert current value to newtons
   unit = p_unit;
   value = value / Convert.toN(unit); // convert back to new unit
+  return value;
 }
 
 // math presrving units
