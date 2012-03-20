@@ -2,11 +2,18 @@
 #define MY_SYSTEM_H
 
 #include <iostream>
+#include <sstream>
+#include <vector>
 #include "hash.h"
 #include "force_vector.h"
 #include "point.h"
 
 using namespace std;
+
+struct tuple {
+  string first;
+  string second;
+};
 
 // an action describes a force at a point
 class action {
@@ -21,11 +28,14 @@ class action {
 
 class my_system {
   public:
-    my_hash<action> actions;
+    vector<tuple> actions;
 
     my_hash<force_vector> forces;
-    my_hash<force_vector> moments;
+    my_hash<force_vector> couples;
     my_hash<point> points;
+
+    void bind_force(string p, string f); // which forces is at which point
+    string list_actions();  // list bound points
 
     force_vector force_equ(); // sum of all forces
     force_vector moment_equ(point loc); // sum of all moments about a point

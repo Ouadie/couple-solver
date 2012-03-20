@@ -6,14 +6,11 @@
 using namespace std;
 
 int main () {
+  my_system sys;
   force_vector one(-1, "N", 0, "N", 0, "N");
   point o(0,0,0);
-  point a(1,0,0);
-  point b(0,1,0);
-  action a_1(a, one);
-  action b_1(b, one);
-  cout << a_1.moment_at(o) << endl;
-  cout << b_1.moment_at(o) << endl;
+  sys.bind_force("one", "o");
+  cout << sys.list_actions() << endl;
   return 0;
 }
   

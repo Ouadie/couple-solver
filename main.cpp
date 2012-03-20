@@ -140,7 +140,7 @@ void add_force(vector<string> &data) {
   }
 }
 
-void add_moment(vector<string> &data) {
+void add_couple(vector<string> &data) {
   data.erase(data.begin()); // remove what was the command
   string elem = data[0];
   data.erase(data.begin()); // remove what was the element name
@@ -151,8 +151,8 @@ void add_moment(vector<string> &data) {
   data.erase(data.begin()); // remove what was the equal sign
   try {
     force_vector a(data);
-    sys.moments[elem] = a;
-    cout << "Added moment " << elem << ": " << a << endl;
+    sys.couples[elem] = a;
+    cout << "Added couple " << elem << ": " << a << endl;
   } catch (exception& e) {
     cout << e.what() << endl;
   }
@@ -174,10 +174,21 @@ int main(void) {
       if (data[0] == "done" || data[0] == "exit")
         done = true;
       else if (data[0] == "list" || data[0] == "ls") {
-        if (data[1] == "forces" || data[1] == "f")
+        if (data.size() >= 2) {
+          if (data[1] == "forces" || data[1] == "f")
+            cout << sys.forces << endl;
+          else  if (data[1] == "couples" || data[1] == "c")
+            cout << sys.couples << endl;
+          else  if (data[1] == "points" || data[1] == "p")
+            cout << sys.points << endl;
+        } else {
+          cout << "Forces: " << endl;
           cout << sys.forces << endl;
-        else  if (data[1] == "moments" || data[1] == "m")
-          cout << sys.moments << endl;
+          cout << "Points: " << endl;
+          cout << sys.points << endl;
+          cout << "Couples: " << endl;
+          cout << sys.couples << endl;
+        }
       } 
       else if (data[0] == "remove" || data[0] == "rm")
         remove_vector(data[1]);
@@ -189,8 +200,8 @@ int main(void) {
         ClearScreen();
       else if (data[0] == "force")
         add_force(data);
-      else if (data[0] == "moment")
-        add_moment(data);
+      else if (data[0] == "couple")
+        add_couple(data);
     }
   }
 

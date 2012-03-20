@@ -25,5 +25,21 @@ force_vector action::moment_at(const point &p) {
   return moment;
 }
 
+void my_system::bind_force(string p, string f) {
+  tuple act;
+  act.first = p;
+  act.second = f;
+  actions.push_back(act);
+}
+
+string my_system::list_actions() {
+  stringstream out;
+  out << "Force  Point" << endl;
+  vector<tuple>::iterator it = actions.begin();
+  for (it = actions.begin(); it < actions.end(); it++) {
+    out << it->first << " " << it->second << endl;
+  }
+  return out.str();
+}
 
 #endif
