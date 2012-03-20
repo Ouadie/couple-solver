@@ -4,6 +4,7 @@
 #include <iostream>
 #include <sstream>
 #include <vector>
+#include <map>
 #include "hash.h"
 #include "force_vector.h"
 #include "point.h"
@@ -11,8 +12,8 @@
 using namespace std;
 
 struct tuple {
-  string first;
-  string second;
+  string force;
+  string point;
 };
 
 // an action describes a force at a point

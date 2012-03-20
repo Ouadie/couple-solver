@@ -25,21 +25,48 @@ force_vector action::moment_at(const point &p) {
   return moment;
 }
 
-void my_system::bind_force(string p, string f) {
+void my_system::bind_force(string f, string p) {
   tuple act;
-  act.first = p;
-  act.second = f;
+  act.point = p;
+  act.force = f;
   actions.push_back(act);
 }
 
 string my_system::list_actions() {
   stringstream out;
-  out << "Force  Point" << endl;
+  out << "   force at point" << endl;
   vector<tuple>::iterator it = actions.begin();
-  for (it = actions.begin(); it < actions.end(); it++) {
-    out << it->first << " " << it->second << endl;
+  for (int i = 0; it < actions.end(); i++, it++) {
+    out << i << ": " << it->force << " at " << it->point << endl;
   }
   return out.str();
+}
+
+force_vector my_system::force_equ() {
+  vector<tuple>::iterator it = actions.begin();
+  force_vector result = forces[it->force];
+  it++;
+  for (it; it < actions.end(); it++) {
+    result += forces[it->force]; 
+  }
+  return result;
+}
+
+force_vector my_system::moment_equ(point loc) {
+  vector<tuple>::iterator it = actions.begin();
+  action act(points[it->point], forces[it->force]);
+  force_vector result =  act.moment_at(loc);
+  it++;
+  for (it; it < actions.end(); it++) {
+    act = action(points[it->point], forces[it->force]);
+    result += act.moment_at(loc);
+  }
+  // sum all couples as well
+  map<string, force_vector>::iterator itr = couples.begin();
+  for (int i = 0; i < couples.size(); i++, itr++) {
+    result += itr->second;
+  }
+  return result;
 }
 
 #endif
